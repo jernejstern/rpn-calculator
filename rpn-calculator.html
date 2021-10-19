@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            RPN calculator
+        </title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <script>
+            sklad = Object();
+
+            sklad.podatki=[];
+            sklad.vrh=0;
+
+            sklad.push = function(element){
+                sklad.podatki[sklad.vrh]=element;
+                sklad.vrh=sklad.vrh+1;
+            };
+            sklad.pop = function(){
+                sklad.vrh=sklad.vrh-1;
+                return sklad.podatki[sklad.vrh];
+
+            };
+            sklad.size = function(){
+                return sklad.vrh
+            };
+            sklad.clear = function(){
+                sklad.vrh = 0;
+            };
+            sklad.peek = function(){
+                return sklad.podatki[sklad.vrh-1];
+            };
+
+            function izracunaj (rpn, sklad){
+                var i,a,b;
+                sklad.clear();
+                for(i=0;rpn[i]!=0;i++){
+                    if(typeof rpn[i] == "number"){
+                        
+                        sklad.push(rpn[i]);
+                    }
+                    else if (sklad.size()>1){
+                        a=sklad.pop();
+                        b=sklad.pop();
+                        if (rpn[i]=="+"){
+                            sklad.push(a+b);
+                        }
+                        else if (rpn[i]=="-"){
+                            sklad.push(a-b);
+                        }
+                        else if (rpn[i]=="*"){
+                            sklad.push(a*b);
+                        }
+                        else if (rpn[i]=="/"){
+                            if(b!=0){
+                                sklad.push(a/b);
+                            }
+                            else{
+                                return 4;//napaka: deljenje z 0;
+                            }
+                        }
+                        else{
+                            return 3;//napaka: nedovoljen simbol;
+                        }
+                    }
+                    else{
+                        return 2;//napaka: premalo operandov
+                    }
+                }
+                if(sklad.size()!=1){
+                    return 1;//napaka: preveč operandov ali prazen izraz
+                }
+                else{
+                    return 0; // operacja brez napak!
+
+                }
+            }
+
+            var rpn = [500,23,"*",0];//tukaj vpiši izraz v RPN obliki. izraz mora vsebovati eno število več, kot je operatorjev in mora biti zaključen s čuvajem(0).
+            if(izracunaj(rpn,sklad)==0){
+                console.log(sklad.pop());
+            }
+            else{console.log(izracunaj(rpn,sklad))};
+        </script>
+    </body>
+</html>
